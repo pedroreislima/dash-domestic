@@ -1,37 +1,65 @@
 import random as rnd
 import datetime
 import calendar
-import decimal
 from decimal import Decimal, getcontext
+
 getcontext().prec = 2
-from utils import get_weekdays
 
-class Subscription():
-    '''
 
-    
+class Subscription:
+    """
+    Generate subscriptions expenses monthly for given period from start to end date.
+
     Attributes:
 
-    '''    
-    def __init__(self, id:str, possible_values:list[Decimal], dist_values:list[float], dist_week:str = 'constant'):
+
+    """
+
+    def __init__(
+        self,
+        id: str,
+        value: Decimal,
+        start_date: tuple[int, int],
+        end_date: tuple[int, int],
+        due_day: int,
+    ):
         self.id = id
-        self.possible_values = possible_values
-        self.dist_values = dist_values
-        self.day_distributions = {
-        'wknd': [0.1,0.1,0.1,0.1,0.1,0.25,0.25],
-        'quinta': [0,0,0,1,0,0,0],
-        'constant': [1/7 for x in range(7)],
-        'monthly': []
-    }
-        self.dist_week = self.day_distributions[dist_week]
-        
-    def generate_expense_test(self, year, month):
-        '''
+        self.value = value
+        self.start_date = start_date
+        self.end_date = end_date
+        if not (1 <= due_day <= 25):
+            raise ValueError("due day must be between 1 and 25")
+        self.due_day = due_day
+
+    def generate_subscriptions(self) -> list[dict]:
+        """
         Generate monthly expense from subscription.
-        
+
         Return:
             dict row with Id,Value and Date.
-        '''
-        
-        return [self.id, entry_value, entry_date]
-    
+        """
+        entry_date = datetime.date(self.start_date[0], self.start_date[1], self.due_day)
+        end_date = datetime.date(self.end_date[0], self.end_date[1], self.due_day)
+        if entry_date > end_date:
+            raise ValueError("Start date must be before end date")
+        current_date = entry_date
+        subscription_entries = []
+        while current_date <= end_date:
+            current_year = current_date.year
+            current_month = current_date.month
+
+            row_entry = {
+                "id": self.id,
+                "value": self.value,
+                "date": datetime.date(current_year, current_month, self.due_day),
+            }
+            subscription_entries.append(row_entry)
+
+            if current_month == 12:
+                current_year += 1
+                current_month = 1
+            else:
+                current_month += 1
+            current_date = datetime.date(current_year, current_month, self.due_day)
+
+        return subscription_entries
