@@ -1,6 +1,8 @@
 import random as rnd
 import datetime
 import calendar
+import decimal
+from utils import get_weekdays
 from decimal import Decimal, getcontext
 
 getcontext().prec = 2
@@ -17,7 +19,13 @@ class Expense:
         dis_week: distribution of the possible consumption throughout the week
     """
 
-    def __init__(self, id: str, value: Decimal, start_date, end_date):
+    def __init__(
+        self,
+        id: str,
+        possible_values: list[Decimal],
+        dist_values: list[float],
+        dist_week: str = "constant",
+    ):
         self.id = id
         self.possible_values = possible_values
         self.dist_values = dist_values
@@ -29,7 +37,7 @@ class Expense:
         }
         self.dist_week = self.day_distributions[dist_week]
 
-    def generate_expense_test(self, year, month):
+    def generate_expense(self, year, month):
         """
         Generate expense row for id in certain date, with value based on given distribution.
 
