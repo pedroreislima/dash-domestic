@@ -6,7 +6,7 @@ from decimal import Decimal, getcontext
 
 getcontext().prec = 2
 
-expense_list = [
+expenses_list = [
     ["Lamen", [Decimal(34.99), Decimal(19.99)], [0.3, 0.7], "constant"],
     ["Pizza", [Decimal(59.99), Decimal(30)], [0.4, 0.6], "wknd"],
     ["Feijoada", [Decimal(32.00), Decimal(24.99)], [0.5, 0.5], "constant"],
@@ -15,7 +15,7 @@ expense_list = [
 ]
 
 
-def generate_table_expenses(expenses_list: list):
+def generate_table_expenses(expenses_list: list) -> list:
     """
     Generate expenses given monthly occurrences. Each input will help build 3 months for simplicity.
     """
@@ -23,6 +23,7 @@ def generate_table_expenses(expenses_list: list):
     start_year = int(input("give the starting year in int"))
     start_month = int(input("give the starting month"))
     start_date = datetime.date(start_year, start_month, 1)
+
     end_year = int(input("give the ending year in int"))
     end_month = int(input("give the ending month"))
     end_date = datetime.date(end_year, end_month, 1)
@@ -37,7 +38,7 @@ def generate_table_expenses(expenses_list: list):
         while current_date <= end_date:
             occurrences = int(
                 input(
-                    f"how many ocurrences of {expense[0]} in {current_year, current_month}?"
+                    f"how many ocurrences of {expense[0]} in {current_year, " ", current_month} and the next two months?"
                 )
             )
 
@@ -45,11 +46,8 @@ def generate_table_expenses(expenses_list: list):
             for i in range(3):
 
                 for j in range(occurrences):
-                    expense = Expense(
-                        expense[0],
-                        expense[1],
-                    )
-                    data.append(expense)
+                    entry = Expense(expense[0], expense[1], expense[2], expense[3])
+                    data.append(entry.generate_expense(current_year, current_month))
 
                 if current_month == 12:
                     current_year += 1
@@ -57,8 +55,7 @@ def generate_table_expenses(expenses_list: list):
                 else:
                     current_month += 1
                 current_date = datetime.date(current_year, current_month, 1)
-
-    pass
+    return data
 
 
 def generate_subscriptions():
