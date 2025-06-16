@@ -21,7 +21,7 @@ class Subscription:
         value: Decimal,
         start_date: tuple[int, int],
         end_date: tuple[int, int],
-        due_day: int,
+        due_day: int = 10,
     ):
         self.id = id
         self.value = value

@@ -56,5 +56,10 @@ class Expense:
                 [x + 1 for x in range(calendar.monthrange(year, month)[-1])]
             )
             entry_date = datetime.date(year, month, entry_day)
+        row_entry = {
+            "id": self.id,
+            "value": entry_value,
+            "date": entry_date,
+        }
 
-        return [self.id, entry_value, entry_date]
+        return row_entry
